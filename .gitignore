@@ -1,0 +1,15 @@
+*.iml
+.gradle
+.idea
+.DS_Store
+build
+captures
+.externalNativeBuild
+.cxx
+local.properties
+xcuserdata
+ios/Podfile.lock
+shared/shared.podspec
+/ios/ios.xcodeproj/
+/ios/ios.xcworkspace/
+/ios/Pods/
