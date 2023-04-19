@@ -127,6 +127,14 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
         val interval = CMTimeMakeWithSeconds(1.0, NSEC_PER_SEC.toInt())
         avAudioPlayer.addPeriodicTimeObserverForInterval(interval, null, observer)
 
+        NSNotificationCenter.defaultCenter.addObserverForName(
+            name = AVPlayerItemDidPlayToEndTimeNotification,
+            `object` = avAudioPlayer.currentItem,
+            queue = NSOperationQueue.mainQueue,
+            usingBlock = {
+                next()
+            }
+        )
     }
 
     private fun stop(){
@@ -158,3 +166,4 @@ class AudioObserver: ObserverProtocol, NSObject() {
     }
 
 }
+

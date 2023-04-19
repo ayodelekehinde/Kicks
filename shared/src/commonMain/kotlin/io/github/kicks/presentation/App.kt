@@ -42,14 +42,12 @@ fun App(){
             isBuffering = playerState.isBuffering,
             isPlaying = playerState.isPlaying,
             currentPlayingIndex = playerState.currentItemIndex,
-            onItemClick = {
-               player.play(it)
-            },
+            onItemClick = { player.play(it) },
             onPause = { player.pause() },
             onPlay = { player.play() },
             onNext = { player.next() },
             onPrev = { player.prev() },
-            onSeek = {}
+            onSeek = { player.seekTo(it) }
         )
 
     }
@@ -262,7 +260,8 @@ fun SeekBarAndDuration(
             parseDurationToFloat(currentDuration, totalDurationInSeconds, totalDuration, isPlaying),
             modifier = Modifier.weight(1f),
             onValueChange = {
-               println("Value change")
+               val seekTime = parseFloatToDuration(it, totalDurationInSeconds)
+                onSeek(seekTime)
             },
             colors = SliderDefaults.colors(thumbColor = Color.White, inactiveTrackColor = Color.Gray, activeTrackColor = Color.Blue)
         )
@@ -281,6 +280,9 @@ private fun parseDurationToFloat(currentDuration: Long, max: Long, otherMax: Str
     val newMax =  if (isPlaying && max == 0L) convertTimeToSeconds(otherMax) else max
     val percentage =  (currentDuration.toFloat() / newMax.toFloat()).coerceIn(0f, 1f)
     return if (percentage.isNaN()) 0f else percentage
+}
+private fun parseFloatToDuration(value: Float, max: Long): Double{
+    return (max * value).toDouble()
 }
 fun convertTimeToSeconds(time: String): Long {
     val parts = time.split(":")
