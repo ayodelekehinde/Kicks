@@ -29,7 +29,7 @@ class HomeViewModel {
                duration = "2:01",
            ),
            Audio(
-               streamUrl = "https://cdn.pixabay.com/download/audio/2022/07/26/audio_c3c117f430.mp3",
+               streamUrl = "https://naijaloaded.store/assets/uploads/Asake-2-30.mp3",
                imageUrl = "4.png",
                artists = "lemonmusicstudio",
                title = "Nothing Just Happens",

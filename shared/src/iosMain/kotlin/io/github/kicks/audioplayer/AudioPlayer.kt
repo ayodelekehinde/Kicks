@@ -18,12 +18,13 @@ import kotlin.time.toDuration
 
 
 
-actual class AudioPlayer actual constructor(private val playerState: PlayerState) {
+actual class AudioPlayer actual constructor(private val playerState: PlayerState): ObserverProtocol, NSObject() {
     private val playerItems = mutableListOf<AVPlayerItem>()
     private val avAudioPlayer: AVPlayer = AVPlayer()
 
     private var currentItemIndex = 0
     private val audioObserver = AudioObserver()
+    private var hasLoadedDuration = false
 
     private val observer: (CValue<CMTime>) -> Unit =  { time: CValue<CMTime> ->
         playerState.isBuffering = avAudioPlayer.currentItem?.isPlaybackLikelyToKeepUp() != true
@@ -31,10 +32,12 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
         val rawTime: Float64 = CMTimeGetSeconds(time)
         val parsedTime = rawTime.toDuration(DurationUnit.SECONDS).inWholeSeconds
         playerState.currentTime = parsedTime
-        if (avAudioPlayer.currentItem != null){
-            val cmTime = CMTimeGetSeconds(avAudioPlayer.currentItem!!.duration)
-            playerState.duration = if (cmTime.isNaN()) 0 else cmTime.toDuration(DurationUnit.SECONDS).inWholeSeconds
-        }
+//        if (avAudioPlayer.currentItem != null && !hasLoadedDuration){
+//            val cmTime = CMTimeGetSeconds(avAudioPlayer.currentItem!!.duration)
+//            println("CM: $cmTime")
+//            playerState.duration = if (cmTime.isNaN()) 0 else cmTime.toDuration(DurationUnit.SECONDS).inWholeSeconds
+//            hasLoadedDuration = true
+//        }
     }
 
 //    private val av = try {
@@ -99,7 +102,6 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
             NSURL.URLWithString(URLString = it)!!
         }
         playerItems.addAll(converted.map { AVPlayerItem(uRL = it) })
-        //playWithIndex(currentItemIndex])
     }
 
     private fun isValidAudioUrl(url: String): Boolean {
@@ -138,6 +140,7 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
     }
 
     private fun stop(){
+        avAudioPlayer.currentItem?.removeObserver(this, forKeyPath = "status")
         avAudioPlayer.pause()
         avAudioPlayer.seekToTime(CMTimeMakeWithSeconds(0.0, NSEC_PER_SEC.toInt()))
     }
@@ -146,9 +149,22 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
         stop()
         playerState.currentItemIndex = currentItemIndex
         val playItem = playerItems[currentItemIndex]
-        playItem.addObserver(audioObserver, forKeyPath = "status", options = NSKeyValueObservingOptionNew, context = null)
+        playItem.addObserver(this, forKeyPath = "status", options = NSKeyValueObservingOptionNew, context = null)
         avAudioPlayer.replaceCurrentItemWithPlayerItem(playItem)
         avAudioPlayer.play()
+    }
+
+    override fun observeValueForKeyPath(
+        keyPath: String?,
+        ofObject: Any?,
+        change: Map<Any?, *>?,
+        context: COpaquePointer?
+    ) {
+        if (keyPath == "status" && avAudioPlayer.currentItem?.status == AVPlayerItemStatusReadyToPlay){
+            val cmTime = CMTimeGetSeconds(avAudioPlayer.currentItem!!.duration)
+            println("CM: $cmTime")
+            playerState.duration = if (cmTime.isNaN()) 0 else cmTime.toDuration(DurationUnit.SECONDS).inWholeSeconds
+        }
     }
 
 }
