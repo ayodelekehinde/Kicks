@@ -31,16 +31,16 @@ class HomeViewModel {
            Audio(
                streamUrl = "https://naijaloaded.store/assets/uploads/Asake-2-30.mp3",
                imageUrl = "4.png",
-               artists = "lemonmusicstudio",
-               title = "Nothing Just Happens",
-               duration = "2:03",
+               artists = "Asake",
+               title = "2:30",
+               duration = "2:18",
            ),
            Audio(
                streamUrl = "https://naijaloaded.store/wp-content/uploads/2022/02/Rema-%E2%80%93-Calm-Down.mp3",
                imageUrl = "5.png",
                artists = "Rema",
                title = "Calm down",
-               duration = "4:05",
+               duration = "3:39",
            ),
            Audio(
                streamUrl = "https://cdn.pixabay.com/download/audio/2023/04/12/audio_6922b1de38.mp3",

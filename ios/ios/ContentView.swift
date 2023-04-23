@@ -13,8 +13,16 @@ struct ComposeView: UIViewControllerRepresentable {
 }
 
 struct ContentView: View {
+
     var body: some View {
         ComposeView()
+            .preferredColorScheme(.dark)
                 .ignoresSafeArea(.keyboard)
+    }
+}
+
+struct Content_Preview: PreviewProvider {
+    static var previews: some View{
+        ContentView()
     }
 }

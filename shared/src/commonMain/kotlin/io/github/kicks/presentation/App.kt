@@ -4,6 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 
@@ -94,12 +95,23 @@ fun ColumnScope.MusicList(
     currentPlayingIndex: Int,
     onClick: (Int) -> Unit
 ){
+    val state = rememberLazyListState()
     Column(modifier = modifier.fillMaxWidth().weight(1f).background(Color.Black)){
-        LazyColumn {
+        LazyColumn(state = state) {
             itemsIndexed(audioList){ index, audio ->
                 AudioItem(audio, index == currentPlayingIndex){
                     onClick(index)
                 }
+            }
+        }
+    }
+    LaunchedEffect(currentPlayingIndex){
+        if (currentPlayingIndex != -1) {
+            // Check if item at index 5 is visible
+            val visibleItems = state.layoutInfo.visibleItemsInfo
+            val itemIsVisible = visibleItems.any { it.index == currentPlayingIndex }
+            if (!itemIsVisible) {
+                state.animateScrollToItem(currentPlayingIndex)
             }
         }
     }
