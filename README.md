@@ -94,13 +94,7 @@ This is an Xcode project that builds into an iOS application. It depends on and 
 
 ## Contribute
 
-If you want to contribute to this library, you're always welcome!
-See [Contributing Guidelines](CONTRIBUTING.md).
-
-## Discuss 💬
-
-Have any questions, doubts or want to present your opinions, views? You're always welcome.
-You can [start discussions](https://github.com/PatilShreyas/Foodium-KMM/discussions).
+Feel free to fork and open a pull request.
 
 ## Acknowledgements
 
