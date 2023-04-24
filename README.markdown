@@ -19,12 +19,14 @@ to both platforms using AVPlayer on iOS and Media3 on Android.
 ### 📱 Sneak peak
 ### Screenshots
 
-![](/assets/android.png)
-![](/assets/iOS.png)
+<a href="url"><img src="/assets/android.png" align="left" height="600" width="284" ></a>
+<a href="url"><img src="/assets/iOS.png" align="center" height="600" width="284" ></a>
 
 
 #### ▶️ Android
-https://user-images.githubusercontent.com/61739400/234006497-cbabc218-3bbc-44f4-b81c-a792af78a70f.gif
+
+https://user-images.githubusercontent.com/61739400/234009722-6f65161f-950b-4479-8f65-0e8934593bed.mp4
+
 
 
 
