@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.kicks.audioplayer.AudioPlayer
@@ -50,6 +52,12 @@ fun App(){
             onPrev = { player.prev() },
             onSeek = { player.seekTo(it) }
         )
+
+        DisposableEffect(Unit){
+            onDispose {
+                player.cleanUp()
+            }
+        }
 
     }
 }
@@ -141,7 +149,7 @@ fun AudioItem(
             modifier = Modifier.padding(10.dp).size(50.dp).clip(RoundedCornerShape(15.dp))
         )
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)){
-            Text(audio.title, fontSize = 16.sp, color = Color.White)
+            Text(audio.title, fontSize = 16.sp, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(audio.artists, fontSize = 14.sp, fontWeight = FontWeight.Normal, color = Color.White)
         }
         Text(
@@ -272,7 +280,7 @@ fun SeekBarAndDuration(
             parseDurationToFloat(currentDuration, totalDurationInSeconds, totalDuration, isPlaying),
             modifier = Modifier.weight(1f),
             onValueChange = {
-               val seekTime = parseFloatToDuration(it, totalDurationInSeconds)
+               val seekTime = parseFloatToDuration(it, totalDurationInSeconds, totalDuration, isPlaying)
                 onSeek(seekTime)
             },
             colors = SliderDefaults.colors(thumbColor = Color.White, inactiveTrackColor = Color.Gray, activeTrackColor = Color.Blue)
@@ -280,6 +288,12 @@ fun SeekBarAndDuration(
         Text(parseDurationToTime(totalDurationInSeconds, totalDuration, isPlaying), fontSize = 14.sp, color = Color.White)
     }
 }
+
+/**
+ * Some media item returns 0 from AVPlayer.
+ * Still investigating the reason.
+ * So if its 0, convert the duration string to seconds
+ */
 
 private fun parseDurationToTime(totalDuration: Long, otherTotalDuration: String, isPlaying: Boolean): String {
     val seconds = if (isPlaying && totalDuration == 0L) convertTimeToSeconds(otherTotalDuration) else totalDuration
@@ -293,8 +307,9 @@ private fun parseDurationToFloat(currentDuration: Long, max: Long, otherMax: Str
     val percentage =  (currentDuration.toFloat() / newMax.toFloat()).coerceIn(0f, 1f)
     return if (percentage.isNaN()) 0f else percentage
 }
-private fun parseFloatToDuration(value: Float, max: Long): Double{
-    return (max * value).toDouble()
+private fun parseFloatToDuration(value: Float, max: Long, otherMax: String, isPlaying: Boolean): Double{
+    val newMax = if (isPlaying && max == 0L) convertTimeToSeconds(otherMax) else max
+    return (newMax * value).toDouble()
 }
 fun convertTimeToSeconds(time: String): Long {
     val parts = time.split(":")

@@ -1,34 +1,21 @@
 package io.github.kicks.audioplayer
 
-import android.content.Context
-import android.media.MediaPlayer
+
 import android.os.Handler
 import android.os.Looper
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.Timeline
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import io.github.kicks.KicksApp
-import kotlinx.coroutines.*
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.seconds
 
-actual class AudioPlayer actual constructor(private val playerState: PlayerState): java.lang.Runnable  {
+
+actual class AudioPlayer actual constructor(private val playerState: PlayerState): Runnable  {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val executorService = Executors.newSingleThreadScheduledExecutor()
-    private lateinit var schedule: ScheduledFuture<*>
-
     private val mediaPlayer = ExoPlayer.Builder(KicksApp.appContext).build()
     private val mediaItems = mutableListOf<MediaItem>()
-    private var currentItemIndex = 0
+    private var currentItemIndex = -1
     private val listener = object: Player.Listener{
 
         override fun onPlaybackStateChanged(playbackState: Int) {
@@ -59,25 +46,18 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
         }
     }
     private fun stopUpdate(){
-//        if (::schedule.isInitialized) {
-//            schedule.cancel(false)
-//        }
         handler.removeCallbacks(this)
     }
     private fun scheduleUpdate(){
         stopUpdate()
-//        if (!executorService.isShutdown) {
-//            schedule = executorService.scheduleAtFixedRate(
-//                this,
-//                100,
-//                1000,
-//                TimeUnit.MILLISECONDS
-//            )
-//        }
         handler.postDelayed(this, 100)
     }
     actual fun play() {
-        mediaPlayer.play()
+        if (currentItemIndex == -1){
+            play(0)
+        }else{
+            mediaPlayer.play()
+        }
     }
 
     actual fun pause() {
@@ -85,13 +65,9 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
     }
 
     actual fun addSongsUrls(songsUrl: List<String>) {
-        // Build the media item.
         mediaItems += songsUrl.map { MediaItem.fromUri(it) }
         mediaPlayer.addListener(listener)
-        //mediaPlayer.setMediaItems(mediaItems)
         mediaPlayer.prepare()
-
-
     }
 
     actual fun next() {
@@ -103,11 +79,19 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
     }
 
     actual fun prev() {
-        playerState.canPrev = (currentItemIndex - 1) >= 0
-        if (playerState.canPrev) {
-            currentItemIndex -= 1
-            playWithIndex(currentItemIndex)
+        when{
+            playerState.currentTime > 3 ->{
+                seekTo(0.0)
+            }
+            else ->{
+                playerState.canPrev = (currentItemIndex - 1) >= 0
+                if (playerState.canPrev) {
+                    currentItemIndex -= 1
+                    playWithIndex(currentItemIndex)
+                }
+            }
         }
+
     }
 
     actual fun play(songIndex: Int) {
@@ -119,7 +103,6 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
 
     actual fun seekTo(time: Double) {
         val seekTime = time * 1000
-        println("Seeking to: ${seekTime.toLong()}")
         mediaPlayer.seekTo(seekTime.toLong())
     }
 
@@ -133,6 +116,11 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
     override fun run() {
         playerState.currentTime = mediaPlayer.currentPosition / 1000
         handler.postDelayed(this, 1000)
+    }
+
+    actual fun cleanUp(){
+        mediaPlayer.release()
+        mediaPlayer.removeListener(listener)
     }
 
 }
