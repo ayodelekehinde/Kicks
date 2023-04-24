@@ -24,12 +24,13 @@ to both platforms using AVPlayer on iOS and Media3 on Android.
 
 
 #### ▶️ Android
+https://user-images.githubusercontent.com/61739400/234006497-cbabc218-3bbc-44f4-b81c-a792af78a70f.gif
 
-https://user-images.githubusercontent.com/19620536/232288166-5ca48ebc-b36f-43f3-b759-471834b31c2f.mp4
+
 
 #### ▶️ iOS
 
-https://user-images.githubusercontent.com/19620536/232288185-fff651ef-1acc-4b68-92e7-d88a0a4e1f4a.mp4
+https://user-images.githubusercontent.com/61739400/234008361-54ef31d7-e492-445c-92f4-22e723d6d2f8.mp4
 
 ---
 
