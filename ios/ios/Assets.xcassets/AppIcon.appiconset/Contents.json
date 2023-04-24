@@ -1,11 +1,13 @@
 {
   "images" : [
     {
+      "filename" : "kicks_icon.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "20x20"
     },
     {
+      "filename" : "kicks_icon 1.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "20x20"
@@ -31,11 +33,13 @@
       "size" : "40x40"
     },
     {
+      "filename" : "kicks_icon 2.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "60x60"
     },
     {
+      "filename" : "kicks_icon_1.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "60x60"
