@@ -39,6 +39,7 @@ https://user-images.githubusercontent.com/61739400/234008361-54ef31d7-e492-445c-
 ## Built with
 
 - [Kotlin](kotlinlang.org): Programming language
+- [Kotlin/Native](https://kotlinlang.org/docs/native-overview.html): Kotin Native interop with Objective-C 
 - [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html): For building multi-platform applications in the single codebase.
 - [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/): For a shared UI between Android and iOS.
 - [AVPlayer](https://developer.apple.com/documentation/avfoundation/avplayer): Foundation Media player library for iOS
