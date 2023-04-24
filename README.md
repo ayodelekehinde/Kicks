@@ -87,7 +87,7 @@ It uses Gradle as the build system. You can add dependencies and change settings
 ### [`androidApp`](/androidApp)
 This is a Kotlin module that builds into an Android application. It uses Gradle as the build system. The `androidApp` module depends on and uses the shared module as a regular Android library.
 
-### [`iosApp`](/iosApp)
+### [`iosApp`](/ios)
 This is an Xcode project that builds into an iOS application. It depends on and uses the shared module as a CocoaPods dependency.
 
 ---
